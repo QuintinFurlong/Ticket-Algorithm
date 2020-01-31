@@ -1,19 +1,23 @@
 #include <iostream>
-#include <atomic>
 #include <thread>
 #include <mutex>
-#include <sstream>
 
 using namespace std;
+
+class Player 
+{
+public:
+	Player(int t_x, int t_y) { x = t_x; y = t_y; }
+	float x, y;
+};
 
 const int n = 4;
 int newTicket;
 int currentOrder;
+Player player(0,0);
 int activeOrders[n];
 int numThreads;
 mutex coutMutex;
-
-ostringstream data;
 
 void func() 
 {
@@ -42,7 +46,27 @@ void func()
 			continue;
 		}
 
+		switch (i)
+		{
+		case 0:
+			player.x += 3;
+			break;
+		case 1:
+			player.y += 3;
+			break;
+		case 2:
+			player.x -= 0.7f;
+			break;
+		case 3:
+			player.y -= 0.7;
+			break;
+		default:
+			player.x += 3000;
+			break;
+		}
+
 		coutMutex.lock();
+		cout << "player x : " << player.x << "\tplayer y : " << player.y << endl;
 		cout << "thread number " << i << "\tnow being served order number : " << activeOrders[i] << endl;
 		coutMutex.unlock();
 
